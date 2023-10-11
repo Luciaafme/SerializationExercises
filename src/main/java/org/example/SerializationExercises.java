@@ -17,6 +17,7 @@ public class SerializationExercises {
 
     public static class Exercise1 {
 
+        // Function that write Json object in a file
         public static void writeJsonToFile(String filePath, String jsonString) {
 
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
@@ -65,21 +66,37 @@ public class SerializationExercises {
         Now serialize them using ObjectOutputStream
      */
     public static class Exercise2 {
+
+        // Function that Deserialize objects from a file
+        public static void Deserialize(String filename, String type) {
+            Gson gson = new Gson();
+            try {
+                FileReader obj1 = new FileReader(filename);
+                if (type == "s") {
+                    Session session = gson.fromJson(obj1, Session.class);
+                    System.out.println("Converting from JSON to an object session:\n" + session.toString());
+                } else if (type == "m") {
+                    Movie movie = gson.fromJson(obj1, Movie.class);
+                    System.out.println("Converting from JSON to an object movie:\n" + movie.getMovie());
+                } else if (type == "t") {
+                    Theater theater = gson.fromJson(obj1, Theater.class);
+                    System.out.println("Converting from JSON to an object movie:\n" + theater.getName());
+                }
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
         public static void main(String[] args) throws FileNotFoundException {
 
             // Deserialize objects from JSON files
-
-            try (Reader obj1 = new FileReader("session1JSON.txt");
-                 Reader obj2 = new FileReader("session2JSON.txt")){
-                Gson gson = new Gson();
-                Session session1 = gson.fromJson(obj1, Session.class);
-                Session session2 = gson.fromJson(obj2, Session.class);
-                System.out.println("Converting from JSON to an object session1:\n" + session1.toString());
-                System.out.println("Converting from JSON to an object session2:\n" + session2.toString());
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Deserialize("movie1JSON.txt","m");
+            Deserialize("movie2JSON.txt","m");
+            Deserialize("session1JSON.txt","s");
+            Deserialize("session2JSON.txt","s");
+            Deserialize("theater1JSON.txt","t");
+            Deserialize("theater2JSON.txt","t");
 
 /*
 
