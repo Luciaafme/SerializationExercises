@@ -2,7 +2,6 @@ package org.example;
 
 
 import java.io.*;
-import java.util.ArrayList;
 
 import com.google.gson.Gson;
 
@@ -32,6 +31,7 @@ public class SerializationExercises {
             // Create two instances of each class
             Movie movie1 = new Movie("Mamma Mia");
             Movie movie2 = new Movie("101 Dalmatas");
+
 
             Theater theater1 = new Theater("Yelmo Cines");
             Theater theater2 = new Theater("Cinesa");
@@ -67,50 +67,55 @@ public class SerializationExercises {
      */
     public static class Exercise2 {
 
-        static Session session1deserialize;
-        static Session session2deserialize;
-        static Movie movie1deserialize;
-        static Movie movie2deserialize;
-        static Theater theater1deserialize;
-        static Theater theater2deserialize;
-
-
-
-        public Exercise2() {
-        }
-
-        // Function that Deserialize objects from a file
-        public static void Deserialize(String filename, String type) {
-            Gson gson = new Gson();
+        // Function to deserialize an object of type Session
+        public static String DeserializeS(String filename) {
+            Session sessionDeserialize = null;
             try {
                 FileReader obj1 = new FileReader(filename);
-                if (type == "s1") {
-                    session1deserialize = gson.fromJson(obj1, Session.class);
-                    System.out.println("Converting from JSON to an object session1:\n" + session1deserialize.toString());
-                }else if (type == "s2"){
-                    session2deserialize = gson.fromJson(obj1, Session.class);
-                    System.out.println("Converting from JSON to an object session2:\n" + session2deserialize.toString());
-                } else if (type == "m1") {
-                     movie1deserialize = gson.fromJson(obj1, Movie.class);
-                    System.out.println("Converting from JSON to an object movie1:\n" + movie1deserialize.getMovie());
-                } else if (type == "m2") {
-                     movie2deserialize = gson.fromJson(obj1, Movie.class);
-                    System.out.println("Converting from JSON to an object movie2:\n" + movie2deserialize.getMovie());
-                } else if (type == "t1") {
-                     theater1deserialize = gson.fromJson(obj1, Theater.class);
-                    System.out.println("Converting from JSON to an object theater1:\n" + theater1deserialize.getName());
-                } else if (type == "t2") {
-                     theater2deserialize = gson.fromJson(obj1, Theater.class);
-                    System.out.println("Converting from JSON to an object theater2:\n" + theater2deserialize.getName());
-                }
+                Gson gson = new Gson();
+                sessionDeserialize = gson.fromJson(obj1, Session.class);
 
-            }catch (IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                return sessionDeserialize.toString();
             }
         }
 
+        // Function to deserialize an object of type Movie
+        public static String DeserializeM(String filename) {
+            Movie movieDeserialize = null;
+            try {
+                FileReader obj1 = new FileReader(filename);
+                Gson gson = new Gson();
+                movieDeserialize = gson.fromJson(obj1, Movie.class);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                return movieDeserialize.getMovie();
+            }
+        }
+
+
+        // Function to deserialize an object of type Theater
+        public static String DeserializeT(String filename) {
+            Theater theaterDeserialize = null;
+            try {
+                FileReader obj1 = new FileReader(filename);
+                Gson gson = new Gson();
+                theaterDeserialize = gson.fromJson(obj1, Theater.class);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                return theaterDeserialize.getName();
+            }
+        }
+
+
         // Function to serialize object using ObjectOutputStream
-/*
+
         public static void ObjectOutputStream(String filename, String objDeserialized) throws FileNotFoundException {
             FileOutputStream fileOutputStream = new FileOutputStream(filename);
             try {
@@ -128,21 +133,25 @@ public class SerializationExercises {
             }
         }
 
-
-
- */
-
-
         public static void main(String[] args) throws FileNotFoundException {
 
             // Deserialize objects from JSON files
-            Deserialize("movie1JSON.txt","m1");
-            Deserialize("movie2JSON.txt","m2");
-            Deserialize("session1JSON.txt","s1");
-            Deserialize("session2JSON.txt","s2");
-            Deserialize("theater1JSON.txt","t1");
-            Deserialize("theater2JSON.txt","t2");
+            String movie1deserialize = DeserializeM("movie1JSON.txt");
+            System.out.println(movie1deserialize);
+            String movie2deserialize = DeserializeM("movie2JSON.txt");
+            String session1deserialize = DeserializeS("session1JSON.txt");
+            System.out.println(session1deserialize);
+            String session2deserialize= DeserializeS("session2JSON.txt");
+            String theater1deserialize = DeserializeT("theater1JSON.txt");
+            String theater2deserialize = DeserializeT("theater2JSON.txt");
 
+            // Serialize objects using ObjectOutputStream
+            ObjectOutputStream("session1OBJ.txt", session1deserialize);
+            ObjectOutputStream("session2OBJ.txt", session2deserialize);
+            ObjectOutputStream("movie1OBJ.txt", movie1deserialize);
+            ObjectOutputStream("movie2OBJ.txt", movie2deserialize);
+            ObjectOutputStream("theater1OBJ.txt", theater1deserialize);
+            ObjectOutputStream("theater2OBJ.txt", theater2deserialize);
 
 
 
