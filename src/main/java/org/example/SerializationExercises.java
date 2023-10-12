@@ -67,36 +67,84 @@ public class SerializationExercises {
      */
     public static class Exercise2 {
 
+        static Session session1deserialize;
+        static Session session2deserialize;
+        static Movie movie1deserialize;
+        static Movie movie2deserialize;
+        static Theater theater1deserialize;
+        static Theater theater2deserialize;
+
+
+
+        public Exercise2() {
+        }
+
         // Function that Deserialize objects from a file
         public static void Deserialize(String filename, String type) {
             Gson gson = new Gson();
             try {
                 FileReader obj1 = new FileReader(filename);
-                if (type == "s") {
-                    Session session = gson.fromJson(obj1, Session.class);
-                    System.out.println("Converting from JSON to an object session:\n" + session.toString());
-                } else if (type == "m") {
-                    Movie movie = gson.fromJson(obj1, Movie.class);
-                    System.out.println("Converting from JSON to an object movie:\n" + movie.getMovie());
-                } else if (type == "t") {
-                    Theater theater = gson.fromJson(obj1, Theater.class);
-                    System.out.println("Converting from JSON to an object movie:\n" + theater.getName());
+                if (type == "s1") {
+                    session1deserialize = gson.fromJson(obj1, Session.class);
+                    System.out.println("Converting from JSON to an object session1:\n" + session1deserialize.toString());
+                }else if (type == "s2"){
+                    session2deserialize = gson.fromJson(obj1, Session.class);
+                    System.out.println("Converting from JSON to an object session2:\n" + session2deserialize.toString());
+                } else if (type == "m1") {
+                     movie1deserialize = gson.fromJson(obj1, Movie.class);
+                    System.out.println("Converting from JSON to an object movie1:\n" + movie1deserialize.getMovie());
+                } else if (type == "m2") {
+                     movie2deserialize = gson.fromJson(obj1, Movie.class);
+                    System.out.println("Converting from JSON to an object movie2:\n" + movie2deserialize.getMovie());
+                } else if (type == "t1") {
+                     theater1deserialize = gson.fromJson(obj1, Theater.class);
+                    System.out.println("Converting from JSON to an object theater1:\n" + theater1deserialize.getName());
+                } else if (type == "t2") {
+                     theater2deserialize = gson.fromJson(obj1, Theater.class);
+                    System.out.println("Converting from JSON to an object theater2:\n" + theater2deserialize.getName());
                 }
+
             }catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
+        // Function to serialize object using ObjectOutputStream
+/*
+        public static void ObjectOutputStream(String filename, String objDeserialized) throws FileNotFoundException {
+            FileOutputStream fileOutputStream = new FileOutputStream(filename);
+            try {
+                ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+                objectOutputStream.writeObject(objDeserialized);
+                objectOutputStream.flush();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } finally {
+                try {
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+
+
+
+ */
+
 
         public static void main(String[] args) throws FileNotFoundException {
 
             // Deserialize objects from JSON files
-            Deserialize("movie1JSON.txt","m");
-            Deserialize("movie2JSON.txt","m");
-            Deserialize("session1JSON.txt","s");
-            Deserialize("session2JSON.txt","s");
-            Deserialize("theater1JSON.txt","t");
-            Deserialize("theater2JSON.txt","t");
+            Deserialize("movie1JSON.txt","m1");
+            Deserialize("movie2JSON.txt","m2");
+            Deserialize("session1JSON.txt","s1");
+            Deserialize("session2JSON.txt","s2");
+            Deserialize("theater1JSON.txt","t1");
+            Deserialize("theater2JSON.txt","t2");
+
+
+
 
 /*
 
