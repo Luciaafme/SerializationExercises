@@ -161,7 +161,7 @@ public class SerializationExercises {
         */
         public static class Exercise3 {
 
-            public static Session readSessionFromFile(String fileName) {
+            public static Session ObjectInputStreamS(String fileName) {
                 try (FileInputStream fileInputStream = new FileInputStream(fileName);
                      ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
 
@@ -175,7 +175,7 @@ public class SerializationExercises {
             public static void main(String[] args) throws FileNotFoundException {
 
                 // Leer y deserializar desde el archivo
-                Session session = readSessionFromFile("Session1OBJ.txt");
+                Session session = ObjectInputStreamS("Session1OBJ.txt");
 
                 // Imprimir el objeto deserializado
                 System.out.println("Deserialize object of type Session: " + session);
