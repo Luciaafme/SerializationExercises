@@ -27,6 +27,7 @@ public class SerializationExercises {
                 e.printStackTrace();
             }
         }
+
         public static void main(String[] args) {
             // Create two instances of each class
             Movie movie1 = new Movie("Mamma Mia");
@@ -66,108 +67,66 @@ public class SerializationExercises {
         Now serialize them using ObjectOutputStream
      */
     public static class Exercise2 {
+        public static Session DeserializeS(String fileName) {
+            File file = new File(fileName);
+            Gson gson = new Gson();
+            Session objDeserialized = null;
 
-        // Function to deserialize an object of type Session
-        public static String DeserializeS(String filename) {
-            Session sessionDeserialize = null;
-            try {
-                FileReader obj1 = new FileReader(filename);
-                Gson gson = new Gson();
-                sessionDeserialize = gson.fromJson(obj1, Session.class);
-
+            try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+                String text;
+                while ((text = br.readLine()) != null) {
+                    objDeserialized = gson.fromJson(text, Session.class);
+                }
             } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                return sessionDeserialize.toString();
+                throw new RuntimeException(e);
             }
+
+            return objDeserialized;
         }
 
-        // Function to deserialize an object of type Movie
-        public static String DeserializeM(String filename) {
-            Movie movieDeserialize = null;
-            try {
-                FileReader obj1 = new FileReader(filename);
-                Gson gson = new Gson();
-                movieDeserialize = gson.fromJson(obj1, Movie.class);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                return movieDeserialize.getMovie();
-            }
-        }
-
-
-        // Function to deserialize an object of type Theater
-        public static String DeserializeT(String filename) {
-            Theater theaterDeserialize = null;
-            try {
-                FileReader obj1 = new FileReader(filename);
-                Gson gson = new Gson();
-                theaterDeserialize = gson.fromJson(obj1, Theater.class);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                return theaterDeserialize.getName();
-            }
-        }
-
-
-        // Function to serialize object using ObjectOutputStream
-
-        public static void ObjectOutputStream(String filename, String objDeserialized) throws FileNotFoundException {
-            FileOutputStream fileOutputStream = new FileOutputStream(filename);
-            try {
-                ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-                objectOutputStream.writeObject(objDeserialized);
+        public static void ObjectOutputStreamS(Session session, String fileName) {
+            try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(fileName))) {
+                objectOutputStream.writeObject(session);
                 objectOutputStream.flush();
             } catch (IOException e) {
                 throw new RuntimeException(e);
-            } finally {
-                try {
-                    fileOutputStream.close();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
             }
         }
 
         public static void main(String[] args) throws FileNotFoundException {
 
-            // Deserialize objects from JSON files
-            String movie1deserialize = DeserializeM("movie1JSON.txt");
-            System.out.println(movie1deserialize);
-            String movie2deserialize = DeserializeM("movie2JSON.txt");
-            String session1deserialize = DeserializeS("session1JSON.txt");
-            System.out.println(session1deserialize);
-            String session2deserialize= DeserializeS("session2JSON.txt");
-            String theater1deserialize = DeserializeT("theater1JSON.txt");
-            String theater2deserialize = DeserializeT("theater2JSON.txt");
 
-            // Serialize objects using ObjectOutputStream
-            ObjectOutputStream("session1OBJ.txt", session1deserialize);
-            ObjectOutputStream("session2OBJ.txt", session2deserialize);
-            ObjectOutputStream("movie1OBJ.txt", movie1deserialize);
-            ObjectOutputStream("movie2OBJ.txt", movie2deserialize);
-            ObjectOutputStream("theater1OBJ.txt", theater1deserialize);
-            ObjectOutputStream("theater2OBJ.txt", theater2deserialize);
+            // Leer y deserializar desde archivos de texto
+            Session session1Deserialize = DeserializeS("session1JSON.txt");
+            Session session2Deserialize = DeserializeS("session2JSON.txt");
 
+            // Imprimir los objetos deserializados
+            System.out.println("Converting from JSON to an object session1:\n" + session1Deserialize.toString());
+            System.out.println("Converting from JSON to an object session2:\n" + session2Deserialize.toString());
+
+            // Serializar y escribir en archivos
+            ObjectOutputStreamS(session1Deserialize, "Session1OBJ.txt");
+            ObjectOutputStreamS(session2Deserialize, "Session2OBJ.txt");
 
 
 /*
-
-            File file = new File("C:\\Users\\lucia\\IdeaProjects\\clase3oct\\session1JSON.txt");
-            BufferedReader br;
+            File file = new File("session1JSON.txt");
+            File file2 = new File("session2JSON.txt");
+            BufferedReader br, br2;
             Session objDeserialized = null;
+            Session objDeserialized2 = null;
+            Gson gson = new Gson();
             br = new BufferedReader(new FileReader(file));
+            br2 = new BufferedReader(new FileReader(file2));
             try {
                 while (true) {
                     String text = br.readLine();
+                    String text2 = br2.readLine();
                     if (text == null) break;
-                    Gson gson = new Gson();
                     objDeserialized = gson.fromJson(text, Session.class);
                     System.out.println("Converting from JSON session1:\n" + objDeserialized.toString());
+                    objDeserialized2 = gson.fromJson(text2, Session.class);
+                    System.out.println("Converting from JSON session2:\n" + objDeserialized2.toString());
                 }
                 br.close();
             } catch (IOException e) {
@@ -175,9 +134,8 @@ public class SerializationExercises {
             }
 
 
- */
-           /*
-            FileOutputStream fileOutputStream = new FileOutputStream("yourfile.txt");
+            FileOutputStream fileOutputStream = new FileOutputStream("yourfileSession1.txt");
+
             try {
                 ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
                 objectOutputStream.writeObject(objDeserialized);
@@ -192,23 +150,41 @@ public class SerializationExercises {
                 }
             }
 
-            */
 
+ */
         }
     }
 
-    /*
-       Deserialize the objects from the binary files created in exercise 2.
-    */
-    public static class Exercise3 {
 
-        public static void main(String[] args) throws FileNotFoundException {
+        /*
+           Deserialize the objects from the binary files created in exercise 2.
+        */
+        public static class Exercise3 {
 
-            FileInputStream fileInputStream = new FileInputStream("yourfile.txt");
+            public static Session readSessionFromFile(String fileName) {
+                try (FileInputStream fileInputStream = new FileInputStream(fileName);
+                     ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
+
+                    Session session = (Session) objectInputStream.readObject();
+                    return session;
+                } catch (IOException | ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            public static void main(String[] args) throws FileNotFoundException {
+
+                // Leer y deserializar desde el archivo
+                Session session = readSessionFromFile("Session1OBJ.txt");
+
+                // Imprimir el objeto deserializado
+                System.out.println("Deserialize object of type Session: " + session);
+/*
+            FileInputStream fileInputStream = new FileInputStream("yourfileSession1.txt");
             try {
                 ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
                 Session s2 = (Session)objectInputStream.readObject();
-                System.out.println("Read with ObjectOutputStream: " + s2);
+                System.out.println("Deserialize using ObjectInputStream: " + s2);
             }
             catch (IOException e) {
                 throw new RuntimeException(e);
@@ -221,7 +197,8 @@ public class SerializationExercises {
                     throw new RuntimeException(e);
                 }
             }
-        }
-    }
 
+ */
+            }
+        }
 }
